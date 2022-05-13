@@ -29,11 +29,17 @@ const Login = () => {
         signInWithEmailAndPassword(auth, email, password)
         .then(result=>{
             const {email} = result.user;
+            console.log(result.user.reloadUserInfo)
             setLoggedInUser({
                 email: email,
-                isLoggedIn: true
+                isLoggedIn: true,
+                isError: false
             })
             navigate(from, { replace: true })
+        })
+        .catch(error=>{
+            console.log(error.message)
+            error.message && setLoggedInUser({isError: true});
         })
     };
     const handleGoogleSignIn = ()=>{
@@ -49,7 +55,8 @@ const Login = () => {
             const signedInUser = {
                 name : displayName,
                 email : email,
-                isLoggedIn : true
+                isLoggedIn : true,
+                isError: false
             };
             setLoggedInUser(signedInUser);
             navigate(from, { replace: true })
@@ -73,10 +80,11 @@ const Login = () => {
                     <Form.Control type="email" name="email" onChange={changeHandler} placeholder="Enter email" />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Group className="mb-1" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" name="password" onChange={changeHandler} placeholder="Password" />
                 </Form.Group>
+                {loggedInUser.isError && <div className='invalid-feedback d-block mb-2'>Email or Password is incorrect!</div>}
                 <Button variant="success" type="submit">
                     Login
                 </Button>
