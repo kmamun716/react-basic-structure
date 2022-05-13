@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Registration = () => {
     const [user, setUser] = useState({
@@ -58,7 +59,8 @@ const Registration = () => {
                 <Button variant="primary" type="submit">
                     Register
                 </Button>
-            </Form>
+            </Form>            
+            <p>Allredady Have an Account? <Link to='/login'>Login Here</Link></p>
         </div>
     );
 };

@@ -1,20 +1,55 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { Link, useLocation, useNavigate  } from 'react-router-dom';
+import { userContext } from '../../App';
+import { initializeApp } from "firebase/app";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import firebaseConfig from '../../Components/FirebaseAuth/firebase.config';
 
-const Login = () => {
-    const [user, setUser] = useState({
-        email:"",
-        password:""
-    });
+initializeApp(firebaseConfig);
+const Login = ({handleLogOut}) => {
+    const [loggedInUser, setLoggedInUser] = useContext(userContext);
+    const navigate = useNavigate ();
+    const location = useLocation(); 
+    const { from } = location.state || { from: { pathname: "/" } };
     const changeHandler = e =>{
-        setUser({
-            ...user,
+        setLoggedInUser({
+            ...loggedInUser,
             [e.target.name]: e.target.value
         })
     };
     const handleSubmit=e=>{
         e.preventDefault();
-        console.log(user);
+        console.log(loggedInUser);
+    };
+    const handleGoogleSignIn = ()=>{
+        console.log('clicked')
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth();
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            /* const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken; */
+            // The signed-in user info.
+            const {displayName, email} = result.user;
+            const signedInUser = {
+                name : displayName,
+                email : email,
+                isLoggedIn : true
+            };
+            setLoggedInUser(signedInUser);
+            navigate(from, { replace: true })
+            // ...
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode, errorMessage);
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            console.log(credential)
+        });
     }
     return (
         <div>
@@ -33,6 +68,8 @@ const Login = () => {
                     Login
                 </Button>
             </Form>
+            <p>Not Have Any Account? <Link to='/register'>Register Here</Link></p>
+            <Button variant='primary' onClick={handleGoogleSignIn} >Login With Google</Button>
         </div>
     );
 };
