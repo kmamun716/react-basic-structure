@@ -5,6 +5,7 @@ import {
   Route
 } from "react-router-dom";
 import firebase from 'firebase/compat/app';
+import { getAuth, signOut } from "firebase/auth";
 import Footer from "./Components/Shared/Footer/Footer";
 import Header from "./Components/Shared/Header/Header";
 import Home from "./Pages/Home";
@@ -25,8 +26,9 @@ function App() {
   });
   //sign out
   const handleLogOut = ()=>{
-    firebase.auth().signOut()
-    .then(result=>{
+    const auth = getAuth();
+  signOut(auth)
+    .then(()=>{
         const user = {
             name : '',
             email: '',
@@ -47,7 +49,7 @@ function App() {
             <Header handleLogOut={ handleLogOut } />
             <Routes>
               <Route path="/" element={<Home/>} />
-              <Route path="/login" element={<Login handleLogOut={handleLogOut} />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Registration/>} />
               <Route path="/test" element={<PrivateRoute><Test/></PrivateRoute>} />
               <Route path="*" element={<NotMatched/>} />

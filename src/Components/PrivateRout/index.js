@@ -5,7 +5,6 @@ import { userContext } from "../../App";
 function PrivateRoute({ children }) {
     const [loggedInUser] = useContext(userContext)
     let location=useLocation();
-    console.log(children)
     return (
           loggedInUser.email ? (
             children

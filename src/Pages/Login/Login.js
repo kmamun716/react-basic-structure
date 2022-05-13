@@ -7,7 +7,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import firebaseConfig from '../../Components/FirebaseAuth/firebase.config';
 
 initializeApp(firebaseConfig);
-const Login = ({handleLogOut}) => {
+const Login = () => {
     const [loggedInUser, setLoggedInUser] = useContext(userContext);
     const navigate = useNavigate ();
     const location = useLocation(); 
@@ -23,7 +23,6 @@ const Login = ({handleLogOut}) => {
         console.log(loggedInUser);
     };
     const handleGoogleSignIn = ()=>{
-        console.log('clicked')
         const provider = new GoogleAuthProvider();
         const auth = getAuth();
         signInWithPopup(auth, provider)
