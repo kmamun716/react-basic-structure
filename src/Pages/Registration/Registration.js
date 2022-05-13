@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const Registration = () => {
     const [user, setUser] = useState({
@@ -19,6 +20,22 @@ const Registration = () => {
     const handleSubmit=e=>{
         e.preventDefault();
         console.log(user);
+        const {name, email, password, confirmPassword, gender} = user;
+        console.log(email)
+        const auth = getAuth();
+        if(password===confirmPassword){
+            createUserWithEmailAndPassword(auth, email, password, name, gender)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                console.log(user)
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage)
+            });
+        }
     }
     return (
         <div>

@@ -1,26 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Link, useLocation, useNavigate  } from 'react-router-dom';
 import { userContext } from '../../App';
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import firebaseConfig from '../../Components/FirebaseAuth/firebase.config';
 
 initializeApp(firebaseConfig);
 const Login = () => {
     const [loggedInUser, setLoggedInUser] = useContext(userContext);
+    const [user, setUser] = useState({
+        email:'',
+        password: ""
+    })
     const navigate = useNavigate ();
     const location = useLocation(); 
     const { from } = location.state || { from: { pathname: "/" } };
     const changeHandler = e =>{
-        setLoggedInUser({
-            ...loggedInUser,
+        setUser({
+            ...user,
             [e.target.name]: e.target.value
         })
     };
     const handleSubmit=e=>{
         e.preventDefault();
-        console.log(loggedInUser);
+        const auth = getAuth();
+        const {email, password} = user;
+        signInWithEmailAndPassword(auth, email, password)
+        .then(result=>{
+            const {email} = result.user;
+            setLoggedInUser({
+                email: email,
+                isLoggedIn: true
+            })
+            navigate(from, { replace: true })
+        })
     };
     const handleGoogleSignIn = ()=>{
         const provider = new GoogleAuthProvider();

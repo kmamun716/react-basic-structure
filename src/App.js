@@ -21,7 +21,6 @@ function App() {
   const [loggedInUser, setLoggedInUser] = useState({
     name:"",
     email : '',
-    password:'',
     isLoggedIn : false
   });
   //sign out
